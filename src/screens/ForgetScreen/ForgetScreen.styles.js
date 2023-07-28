@@ -38,7 +38,8 @@ const ForgetScreenStyles  = StyleSheet.create({
     borderBottomLeftRadius: 20,
     backgroundColor:'#E8E8E8',
     width:'80%',
-    paddingLeft:10
+    paddingLeft:10,
+    color:'black',
    },
    forgotpass:{
     width:'80%',

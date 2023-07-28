@@ -45,6 +45,14 @@ export const UserContextProvider = ({ children }) => {
     }
   }
 
+  const uploadAssets = async (data, assets) => {
+    const updatedUserData = doc(db, "users", `${data.id}`);
+    const oldAssets = data?.assets || [];
+    await updateDoc(updatedUserData, {
+      assets: [...oldAssets, ...assets]
+    });
+  }
+
   const updateProfileImg = async(id, image) => {
     try{
       if(image === ""){
@@ -76,9 +84,17 @@ export const UserContextProvider = ({ children }) => {
       console.log(e.message);
     }
   }
-
+  const value = {
+    userInfo, 
+    setUserInfo, 
+    userDataInsert, 
+    userDataRetrieve, 
+    updateUserData, 
+    updateProfileImg,
+    uploadAssets
+  }
   return (
-    <UserContext.Provider value={{ userInfo, setUserInfo, userDataInsert, userDataRetrieve, updateUserData, updateProfileImg}}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

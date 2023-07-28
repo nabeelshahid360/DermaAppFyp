@@ -6,22 +6,54 @@ import {
   Dimensions,
   Stylesheet,
   Image,
-  TextInput
+  TextInput,
+  Linking,
+  FlatList
 } from 'react-native';
 import Styles from './HomeScreen.styles';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/SimpleLineIcons';
+import Iconlog from 'react-native-vector-icons/AntDesign'
 import { HomeScreenHeadline } from '../../constants/splash-content';
 import { AuthRoutes } from '../../constants/routes';
 import { UserAuth } from '../../../context/AuthContext';
 import { UserData } from '../../../context/UserContext';
+import {launchCamera} from 'react-native-image-picker';
+import { GalleryItem } from '../../components/GalleryItem';
 
 
 export default function HomeScreen(props) {
   const { user, signout } = UserAuth();
-  const {userDataRetrieve, userInfo, setUserInfo} = UserData();
+  const {userDataRetrieve, userInfo, setUserInfo, uploadAssets} = UserData();
   const { component, navigation } = props;
+  const [images, setImages] = useState([]);
+  
+  const cameraOptions = {
+    mediaType: 'photo',
+    //....
+  }
+
+  useEffect(() => {
+    userDataRetrieve(user.uid)
+    .then((data) => {
+      setUserInfo(data);
+      const Assets = data?.assets || [];
+      setImages(Assets);
+      console.log(data);
+    })
+    .catch((e) => {
+        console.log(e);
+        Toast.show({
+            type: "error",
+            text1: e,
+            visibilityTime: 2000
+        });
+    })
+}, []);
+
+
+
 
   const goToSignIn = async() => {
     try{
@@ -34,23 +66,19 @@ export default function HomeScreen(props) {
       console.log(e.message);
     }
   }
-
-  useEffect(() => {
-    userDataRetrieve(user.uid)
-    .then((data) => {
-      setUserInfo(data);
-    })
-    .catch((e) => {
-        console.log(e);
-        Toast.show({
-            type: "error",
-            text1: e,
-            visibilityTime: 2000
-        });
-    })
-}, [])
+  const openCamera = () => {
+    launchCamera(cameraOptions, (camResponse)=>{
+      const { assets } = camResponse;
+     if(assets) {
+      uploadAssets(userInfo, assets )
+      console.log(assets);
+      setImages(pre => [ ...pre, ...assets]);
+     } 
+    });
+  }
 
 
+  
   return <View style={Styles.container}>
 <LinearGradient
         colors={['#2C64C6', '#5B8BDF']}
@@ -66,14 +94,16 @@ export default function HomeScreen(props) {
               size={20}
 
             />
+               <View style={Styles.usernamediv}>
+        <Text style={Styles.usernametxt}>{userInfo?.name}</Text>
+       </View>
           </View>
           <View style={Styles.logout}>
             <TouchableOpacity onPress={goToSignIn}>
-              <Icon style={Styles.logicon}
+              <Iconlog style={Styles.logicon}
                 name="logout"
                 color="#fff"
                 size={25}
-
               />
             </TouchableOpacity>
           </View>
@@ -83,11 +113,8 @@ export default function HomeScreen(props) {
         </View>
     
     <View style={Styles.testcases}>
-       <View style={Styles.usernamediv}>
-        <Text style={Styles.usernametxt}>{userInfo?.name}</Text>
-       </View>
        <View style={Styles.testsec}>
-        <TouchableOpacity style={Styles.casebtn}>
+        <TouchableOpacity onPress={openCamera} style={Styles.casebtn}>
           <Icon
           name="photo-camera"
           color="#045782"
@@ -95,27 +122,18 @@ export default function HomeScreen(props) {
           />
           <Text style={Styles.newcasetxt}>Start new case</Text>
         </TouchableOpacity>
-
        </View>
-
-       <View style={Styles.prevoiussec}>
-        <TouchableOpacity style={Styles.casebtn}>
-          <Icon
-          name="insert-drive-file"
-          color="#045782"
-          size={30}
-          />
-          <Text style={Styles.newcasetxt}>Previous Records</Text>
-        </TouchableOpacity>
-
-       </View>
+       <FlatList
+        data={images}
+        numColumns={2}
+        renderItem={GalleryItem}
+        contentContainerStyle={{flex:1, alignItems:'center', justifyContent:'space-between'}}
+    />
     </View>
     
     </View>
     </LinearGradient>
   </View>
-
-
 };
 HomeScreen.defaultProps = {
   component: '',

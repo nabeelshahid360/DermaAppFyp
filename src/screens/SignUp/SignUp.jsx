@@ -46,6 +46,7 @@ export default function SignUp(props) {
             });
             return;    
         }
+        
       await signUp(email, password);
       const userId = auth.currentUser.uid;
       const data = {

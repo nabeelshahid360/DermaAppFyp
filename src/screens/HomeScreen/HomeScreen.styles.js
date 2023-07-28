@@ -27,26 +27,27 @@ const HomeScreenStyles  = StyleSheet.create({
   alignItems:'flex-end',
   },
   userdetail:{
-    width:"50%"
+    width:"50%",
+    flexDirection:'row'
   },
   testcases:{
     width:"90%",
     backgroundColor:"#fff",
-    height:"80%",
+    height:"75%",
     marginLeft:"auto",
     marginRight:"auto",
-    marginTop:30,
+    marginTop:20,
     borderRadius:15,
   },
   usernamediv:{
     marginLeft:"auto",
     marginRight:"auto",
-    paddingTop:20,
 
   },
   usernametxt:{
     fontSize:18,
-    color:"black"
+    color:"white",
+    fontWeight:700,
   },
   casebtn:{
     flexDirection:"row",
@@ -59,7 +60,6 @@ const HomeScreenStyles  = StyleSheet.create({
     paddingLeft:10
     
   },
-  
 });
 
 export default HomeScreenStyles;

@@ -73,11 +73,11 @@ export default function ForgetScreen(props) {
 
             <Text style={Styles.foottext}>Enter your email here and{'\n'}we'll send you a link to{'\n'}change a new password</Text>
             <TextInput
-            placeholder="Email or Phone Number"
-          style={Styles.inputfileds}
-          textColor='black'
-          value={email}
-          onChangeText={(text) => setEmail(text)}
+            style={Styles.inputfileds}
+            placeholder="Email Address"
+            placeholderTextColor={"black"}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
             />
 
             <TouchableOpacity style={Styles.forgotpass} onPress={handleResetPassword}><Text style={Styles.forgetpastxt}>Forgot Password</Text></TouchableOpacity>
